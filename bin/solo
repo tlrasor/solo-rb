@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "solo"
+
+begin
+  opts = Solo.parse_opts
+  trap("INT") { 
+    puts "Shutting down..." unless opts[:quiet]
+    exit
+  }
+  Solo.open_server(port: opts[:port]) do
+    system(*opts[:command])
+  end
+rescue
+  STDERR.puts "#{$!}" unless opts[:quiet]
+  exit 1
+end
