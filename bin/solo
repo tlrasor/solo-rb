@@ -1,18 +1,8 @@
 #!/usr/bin/env ruby
+lib = File.expand_path("lib", __dir__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
-require "bundler/setup"
 require "solo"
+require "solo/cli"
 
-begin
-  opts = Solo.parse_opts
-  trap("INT") { 
-    puts "Shutting down..." unless opts[:quiet]
-    exit
-  }
-  Solo.open_server(port: opts[:port]) do
-    system(*opts[:command])
-  end
-rescue
-  STDERR.puts "#{$!}" unless opts[:quiet]
-  exit 1
-end
+Solo::CLI.call
